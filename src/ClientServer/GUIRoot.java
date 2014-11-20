@@ -22,7 +22,7 @@ public class GUIRoot extends JFrame {
 		
 		public GUIRoot (int height, int width)
 		{
-			
+			//tester
 			setTitle("What Does This Do?");
 
 			setSize(width, height);
