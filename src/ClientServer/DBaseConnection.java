@@ -1,4 +1,4 @@
-package ClientServer;
+//package ClientServer;
 
 // -- download MySQL from: http://dev.mysql.com/downloads/
 //    Community Server version
