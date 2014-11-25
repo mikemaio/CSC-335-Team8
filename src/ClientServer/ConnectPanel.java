@@ -29,7 +29,7 @@ public class ConnectPanel extends JPanel implements ActionListener{
 		
 		gr = _gr;
 		connectButton = new JButton("Connect");
-		connectIP = new TextField(20);
+		connectIP = new TextField("127.0.0.1", 16);
 		this.setBackground(Color.lightGray);		
 		//add Parts
 		JPanel window = new JPanel();

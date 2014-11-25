@@ -30,7 +30,6 @@ public class RegisterPanel extends JPanel{
 	private JLabel EmailConfirm = new JLabel("Confirm Email: ", SwingConstants.RIGHT);
 	private JLabel Password = new JLabel("Password: ", SwingConstants.RIGHT);
 	private JLabel PasswordConfirm = new JLabel("Confirm Password: ", SwingConstants.RIGHT);
-	private JLabel End = new JLabel("");
 	private JLabel EndLine1 = new JLabel("", SwingConstants.CENTER);
 	private JLabel EndLine2 = new JLabel("", SwingConstants.CENTER);
 	
@@ -115,7 +114,8 @@ public class RegisterPanel extends JPanel{
 							System.out.println("Valid characters");
 						} else {
 							System.out.println("Password does not contain all characters");
-							End.setText("Password must have one letter and one number.");
+							EndLine1.setText("<html><font color='red'>Password must have one</font></html>");
+							EndLine2.setText("<html><font color='red'>letter and one number.</font></html>");
 							correctFormat = false;
 						}*/
 						
