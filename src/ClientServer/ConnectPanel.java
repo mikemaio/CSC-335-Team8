@@ -49,7 +49,6 @@ public class ConnectPanel extends JPanel implements ActionListener{
 						
 						if(address.equals("127.0.0.1")) {
 							gr.refreshGUI(2);
-							Client clientOne = new Client();
 						}
 						else {
 							connectIP.setText("Wrong IP: " + address);

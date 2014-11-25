@@ -13,7 +13,9 @@ public class ConnectionThread extends Thread {
 	private boolean go;
 	private String name;
 	private int id;
+	private DBaseConnection db;
 	
+	//3306
 	// -- the main server (port listener) will supply the socket
 	//    the thread (this class) will provide the I/O streams
 	//    BufferedReader is used because it handles String objects
@@ -59,10 +61,11 @@ public class ConnectionThread extends Thread {
 	public void Stop () {
 		go = false;
 	}
-
+	
 
 	public void run () {
 		// -- server thread runs until the client terminates the connection
+		//put if from send string
 		while (go) {
 			try {
 				// -- always receives a String object with a newline (\n)
@@ -70,7 +73,7 @@ public class ConnectionThread extends Thread {
 				//    The client adds it to the user's string but the BufferedReader
 				//    readLine() call strips it off
 				String txt = datain.readLine();
-				System.out.println("SERVER receive: " + txt);
+				//System.out.println("SERVER receive: " + txt);
 				// -- if it is not the termination message, send it back adding the
 				//    required (by readLine) "\n"
 
@@ -83,9 +86,9 @@ public class ConnectionThread extends Thread {
 					go = false;
 				}
 				else if (txt.equals("hello")) {
-						
-					dataout.writeBytes("world!" + "\n");
-					dataout.flush();
+					
+					db = new DBaseConnection();
+					
 					
 				}
 				else {

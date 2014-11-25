@@ -42,6 +42,7 @@ public class Client {
 	{
 		
 		try {
+			System.out.print("Connect:");
 			// -- construct the peer to peer socket
 			socket = new Socket(HOST, PORT);
 			// -- wrap the socket in stream I/O objects

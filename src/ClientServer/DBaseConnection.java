@@ -27,11 +27,54 @@ public class DBaseConnection {
     // -- this is the username/password, created during installation and in MySQL Workbench
     //    When you add a user make sure you give them the appropriate Administrative Roles
     //    (DBA sets all which works fine)
-    private String user = "CSC335";
-    private String password = "SoftwareEngineering";
+    private String user = "Mike";
+    private String password = "test123";
 
 	public DBaseConnection() {
 		try {
+            // -- make the connection to the database
+			conn = DriverManager.getConnection(url, user, password);
+            
+			// -- These will be used to send queries to the database
+            stmt = conn.createStatement();
+            rset = stmt.executeQuery("SELECT VERSION()");
+
+            if (rset.next()) {
+                System.out.println(rset.getString(1));
+            }
+            
+            // -- a query will return a ResultSet
+            // -- city is a table within the world database
+            rset = stmt.executeQuery("SELECT * FROM city;");
+            
+            // -- the metadata tells us how many columns in the data
+            ResultSetMetaData rsmd = rset.getMetaData();
+            int numberOfColumns = rsmd.getColumnCount();
+            System.out.println("columns: " + numberOfColumns);
+            
+            // -- loop through the ResultSet one row at a time
+            //    Note that the ResultSet starts at index 1
+            while (rset.next()) {
+            	// -- loop through the columns of the ResultSet
+            	for (int i = 1; i < numberOfColumns; ++i) {
+            		System.out.print(rset.getString(i) + "\t\t");
+            	}
+            	System.out.println(rset.getString(numberOfColumns));
+            }
+
+		} catch (SQLException ex) {
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+
+	}
+	public void Test()
+	{
+		System.out.print("Broke");
+		try {
+			System.out.print("Broke2");
             // -- make the connection to the database
 			conn = DriverManager.getConnection(url, user, password);
             

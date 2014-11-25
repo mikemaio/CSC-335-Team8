@@ -1,5 +1,6 @@
 package ClientServer;
 import java.awt.BorderLayout;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -14,6 +15,7 @@ public class GUIRoot extends JFrame {
 		public FunctionsPanel fp;
 		public GetDataPanel gdp;
 		public Server srvr;
+		public Client clientOne;
 		public boolean serverRunning = false;
 		//Panel for master control and used to refresh to new page selection 
 		JPanel controlPanel = new JPanel();
@@ -23,7 +25,8 @@ public class GUIRoot extends JFrame {
 		public GUIRoot (int height, int width)
 		{
 			//tester
-			//testing mikey to master
+			//testing mikey to master Test 123
+			
 			setTitle("What Does This Do?");
 
 			setSize(width, height);
@@ -59,8 +62,10 @@ public class GUIRoot extends JFrame {
             	controlPanel = cp = new ConnectPanel(this);
             	setLayout(new BorderLayout(5,5));
             	this.add(controlPanel, BorderLayout.CENTER);
+            	clientOne = new Client();
                      break;
             case 2:  
+            	clientOne = new Client();
             	controlPanel = lp = new LoginPanel(this);
             	setLayout(new BorderLayout(5,5));
             	this.add(controlPanel, BorderLayout.CENTER);

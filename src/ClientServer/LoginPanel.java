@@ -25,6 +25,7 @@ private JButton changepassLP = new JButton("Change Password");
 private JButton disconnectLP = new JButton("Disconnect");
 private TextField accountLP = new TextField("Enter Account...");
 private TextField passwordLP = new TextField("Enter Password...");
+private ConnectionThread db;
  
 
 	
@@ -57,6 +58,7 @@ private TextField passwordLP = new TextField("Enter Password...");
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						gr.refreshGUI(6);
+						gr.clientOne.sendString("hello");
 					}
 				}
 			);
