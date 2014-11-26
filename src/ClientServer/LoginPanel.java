@@ -58,7 +58,8 @@ private ConnectionThread db;
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						gr.refreshGUI(6);
-						gr.clientOne.sendString("hello");
+						String txt = gr.clientOne.sendString("hello");
+						System.out.println(txt);
 					}
 				}
 			);
@@ -73,6 +74,8 @@ private ConnectionThread db;
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						gr.refreshGUI(4);
+						String txt = gr.clientOne.sendString("register");
+						System.out.println(txt);
 					}
 				}
 			);

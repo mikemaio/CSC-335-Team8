@@ -19,11 +19,14 @@ public class DBaseConnection {
     private Connection conn = null;
     private Statement stmt = null;
     private ResultSet rset = null;
-
+    private int dataBaseSelect = 1;
+    
     // -- connect to the world database
     // -- this is the connector to the database, default port is 3306
-    private String url = "jdbc:mysql://localhost:3306/world";
+    private String url = null;
+    private String query = "SELECT * FROM city;";
     
+   
     // -- this is the username/password, created during installation and in MySQL Workbench
     //    When you add a user make sure you give them the appropriate Administrative Roles
     //    (DBA sets all which works fine)
@@ -31,64 +34,40 @@ public class DBaseConnection {
     private String password = "test123";
 
 	public DBaseConnection() {
-		try {
-            // -- make the connection to the database
-			conn = DriverManager.getConnection(url, user, password);
-            
-			// -- These will be used to send queries to the database
-            stmt = conn.createStatement();
-            rset = stmt.executeQuery("SELECT VERSION()");
-
-            if (rset.next()) {
-                System.out.println(rset.getString(1));
-            }
-            
-            // -- a query will return a ResultSet
-            // -- city is a table within the world database
-            rset = stmt.executeQuery("SELECT * FROM city;");
-            
-            // -- the metadata tells us how many columns in the data
-            ResultSetMetaData rsmd = rset.getMetaData();
-            int numberOfColumns = rsmd.getColumnCount();
-            System.out.println("columns: " + numberOfColumns);
-            
-            // -- loop through the ResultSet one row at a time
-            //    Note that the ResultSet starts at index 1
-            while (rset.next()) {
-            	// -- loop through the columns of the ResultSet
-            	for (int i = 1; i < numberOfColumns; ++i) {
-            		System.out.print(rset.getString(i) + "\t\t");
-            	}
-            	System.out.println(rset.getString(numberOfColumns));
-            }
-
-		} catch (SQLException ex) {
-			// handle any errors
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
-		}
-
+		
 	}
-	public void Test()
+	public void executeQ()
 	{
-		System.out.print("Broke");
+		switch(dataBaseSelect)
+		{
+
+		case 1:
+			 url = "jdbc:mysql://localhost:3306/world";
+			break;
+		case 2:
+			 url = "jdbc:mysql://localhost:3306/userdatabase";
+			break;
+		default:
+			System.out.println("There is an error with the DB selection");
+			break;
+		}
 		try {
-			System.out.print("Broke2");
             // -- make the connection to the database
 			conn = DriverManager.getConnection(url, user, password);
             
 			// -- These will be used to send queries to the database
             stmt = conn.createStatement();
             rset = stmt.executeQuery("SELECT VERSION()");
+            rset = stmt.executeQuery(query);
 
+            
             if (rset.next()) {
                 System.out.println(rset.getString(1));
             }
             
             // -- a query will return a ResultSet
             // -- city is a table within the world database
-            rset = stmt.executeQuery("SELECT * FROM city;");
+            rset = stmt.executeQuery(query);
             
             // -- the metadata tells us how many columns in the data
             ResultSetMetaData rsmd = rset.getMetaData();
@@ -104,8 +83,10 @@ public class DBaseConnection {
             	}
             	System.out.println(rset.getString(numberOfColumns));
             }
-
-		} catch (SQLException ex) {
+            
+		}
+    		
+		catch (SQLException ex) {
 			// handle any errors
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
@@ -113,13 +94,22 @@ public class DBaseConnection {
 		}
 
 	}
+	public void setSelection(int select)
+	{
+		dataBaseSelect = select;
+	}
 
+	public void setQuery(String queryentry)
+	{
+		query = queryentry;
+	}
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 
 		DBaseConnection dbc = new DBaseConnection();
+	
 
 	}
 

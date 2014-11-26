@@ -17,6 +17,7 @@ public class GUIRoot extends JFrame {
 		public Server srvr;
 		public Client clientOne;
 		public boolean serverRunning = false;
+		public boolean clientCreated = false;
 		//Panel for master control and used to refresh to new page selection 
 		JPanel controlPanel = new JPanel();
 		//Cases for Page Choice
@@ -62,10 +63,13 @@ public class GUIRoot extends JFrame {
             	controlPanel = cp = new ConnectPanel(this);
             	setLayout(new BorderLayout(5,5));
             	this.add(controlPanel, BorderLayout.CENTER);
-            	clientOne = new Client();
                      break;
             case 2:  
-            	clientOne = new Client();
+            	if(!clientCreated)
+            	{
+            		clientOne = new Client();
+            		clientCreated = true;
+            	}
             	controlPanel = lp = new LoginPanel(this);
             	setLayout(new BorderLayout(5,5));
             	this.add(controlPanel, BorderLayout.CENTER);

@@ -13,7 +13,9 @@ public class ConnectionThread extends Thread {
 	private boolean go;
 	private String name;
 	private int id;
-	private DBaseConnection db;
+	private DBaseConnection db = new DBaseConnection();
+	private String[] args = {};
+
 	
 	//3306
 	// -- the main server (port listener) will supply the socket
@@ -85,9 +87,25 @@ public class ConnectionThread extends Thread {
 					server.removeID(id);
 					go = false;
 				}
-				else if (txt.equals("hello")) {
+				else if (txt.equals("hello")) 
+				{
+					//dataout.writeBytes(":)" + "/n");
+					db.setSelection(1);
+					db.executeQ();
+					dataout.writeBytes("Sent Hello" + "\n");
+					dataout.flush();
+					//dataout.flush();
 					
-					db = new DBaseConnection();
+					
+				
+				}
+				else if (txt.equals("register"))
+				{
+					db.setSelection(2);
+					db.setQuery("SELECT * FROM user;");
+					db.executeQ();
+					dataout.writeBytes("Sent Hello" + "\n");
+					dataout.flush();
 					
 					
 				}
