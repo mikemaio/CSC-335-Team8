@@ -14,7 +14,6 @@ public class GUIRoot extends JFrame {
 		public ConnectedUsersPanel cup;
 		public FunctionsPanel fp;
 		public GetDataPanel gdp;
-		public Server srvr;
 		public Client clientOne;
 		public boolean serverRunning = false;
 		public boolean clientCreated = false;
@@ -22,6 +21,8 @@ public class GUIRoot extends JFrame {
 		JPanel controlPanel = new JPanel();
 		//Cases for Page Choice
 		public int pageSelection = 1;
+		public String _accountLP = "";
+		public String _passwordLP = "";
 		
 		public GUIRoot (int height, int width)
 		{
@@ -67,7 +68,7 @@ public class GUIRoot extends JFrame {
             case 2:  
             	if(!clientCreated)
             	{
-            		clientOne = new Client();
+            		clientOne = new Client(this);
             		clientCreated = true;
             	}
             	controlPanel = lp = new LoginPanel(this);

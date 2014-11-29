@@ -14,9 +14,9 @@ public class ConnectionThread extends Thread {
 	private String name;
 	private int id;
 	private DBaseConnection db = new DBaseConnection();
-	private String[] args = {};
-
-	
+	private GUIRoot gr;
+	//Panels to Use
+	private String[] args = {};	
 	//3306
 	// -- the main server (port listener) will supply the socket
 	//    the thread (this class) will provide the I/O streams
@@ -75,6 +75,8 @@ public class ConnectionThread extends Thread {
 				//    The client adds it to the user's string but the BufferedReader
 				//    readLine() call strips it off
 				String txt = datain.readLine();
+				String delims = "[,]";
+				String recievedData[] = txt.split(delims); 
 				//System.out.println("SERVER receive: " + txt);
 				// -- if it is not the termination message, send it back adding the
 				//    required (by readLine) "\n"
@@ -82,16 +84,17 @@ public class ConnectionThread extends Thread {
 				// -- if the special "termination" string is received then 
 				//    close the socket, remove this thread object from the
 				//    server's active client thread list, and terminate the thread
+				//db.main(args);
 				if (txt.equals("DiScOnNeCt")) {
 					datain.close();
 					server.removeID(id);
 					go = false;
 				}
-				else if (txt.equals("hello")) 
+				else if (recievedData[0].equals("loginprocedure")) 
 				{
 					//dataout.writeBytes(":)" + "/n");
-					db.setSelection(1);
-					db.executeQ();
+					db.setSelection(2);
+					db.executeLogin(recievedData[1], recievedData[2]);
 					dataout.writeBytes("Sent Hello" + "\n");
 					dataout.flush();
 					//dataout.flush();
@@ -102,7 +105,6 @@ public class ConnectionThread extends Thread {
 				else if (txt.equals("register"))
 				{
 					db.setSelection(2);
-					db.setQuery("SELECT * FROM user;");
 					db.executeQ();
 					dataout.writeBytes("Sent Hello" + "\n");
 					dataout.flush();
@@ -120,4 +122,6 @@ public class ConnectionThread extends Thread {
 			
 		}
 	}
+
+
 }

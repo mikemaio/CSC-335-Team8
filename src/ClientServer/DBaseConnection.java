@@ -19,23 +19,22 @@ public class DBaseConnection {
     private Connection conn = null;
     private Statement stmt = null;
     private ResultSet rset = null;
+    private LoginPanel lp;
+    private int attempts = 0;
     private int dataBaseSelect = 1;
-    
+    private String _account = "";
     // -- connect to the world database
     // -- this is the connector to the database, default port is 3306
     private String url = null;
-    private String query = "SELECT * FROM city;";
-    
-   
     // -- this is the username/password, created during installation and in MySQL Workbench
     //    When you add a user make sure you give them the appropriate Administrative Roles
     //    (DBA sets all which works fine)
     private String user = "Mike";
-    private String password = "test123";
+    private String dpassword = "test123";
 
 	public DBaseConnection() {
-		
 	}
+	
 	public void executeQ()
 	{
 		switch(dataBaseSelect)
@@ -53,59 +52,154 @@ public class DBaseConnection {
 		}
 		try {
             // -- make the connection to the database
-			conn = DriverManager.getConnection(url, user, password);
+			conn = DriverManager.getConnection(url, user, dpassword);
             
 			// -- These will be used to send queries to the database
             stmt = conn.createStatement();
             rset = stmt.executeQuery("SELECT VERSION()");
-            rset = stmt.executeQuery(query);
+            rset = stmt.executeQuery("SELECT * FROM user");
 
-            
-            if (rset.next()) {
-                System.out.println(rset.getString(1));
+            System.out.println(url);
+            if (rset.next()) 
+            {
+            	String tester = null;
+            	tester = rset.getString(1);
+                System.out.println(tester);
+                if(tester.equals("test"))
+                {
+                	System.out.print("AHHH YEA");
+                } 
             }
-            
-            // -- a query will return a ResultSet
-            // -- city is a table within the world database
-            rset = stmt.executeQuery(query);
-            
-            // -- the metadata tells us how many columns in the data
-            ResultSetMetaData rsmd = rset.getMetaData();
-            int numberOfColumns = rsmd.getColumnCount();
-            System.out.println("columns: " + numberOfColumns);
-            
-            // -- loop through the ResultSet one row at a time
-            //    Note that the ResultSet starts at index 1
-            while (rset.next()) {
-            	// -- loop through the columns of the ResultSet
-            	for (int i = 1; i < numberOfColumns; ++i) {
-            		System.out.print(rset.getString(i) + "\t\t");
-            	}
-            	System.out.println(rset.getString(numberOfColumns));
+        
+            if(rset.getString(1) == rset.getString(1))
+            {
+            	System.out.print("AHHH YEA");
             }
-            
-		}
-    		
+		}		
 		catch (SQLException ex) {
 			// handle any errors
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
+	}
+	//handles login procedure
+	public void executeLogin(String account, String password)
+	{
+		_account = account;		
+		 url = "jdbc:mysql://localhost:3306/userdatabase";
+		 try {
+			 	//System.out.println(account);
+	            // -- make the connection to the database
+				conn = DriverManager.getConnection(url, user, dpassword);
 
+				// -- These will be used to send queries to the database
+	            stmt = conn.createStatement();
+	            //rset = stmt.executeQuery("SELECT VERSION()");
+	            rset = stmt.executeQuery("SELECT password FROM userdatabase.user WHERE username =" + "'" +account+"';");
+	            if (rset.next()) 
+	            {
+	            	
+	            	String accountTest = null;
+	            	accountTest = rset.getString(1);
+	            	getLoginAttempts();
+	            	//System.out.println(tester);
+	                if(accountTest.equals(password) && attempts < 4 )
+	                {
+	                	resetLoginAttempts();
+	                	System.out.print("AHHH YEA");
+	                }
+	                else if(attempts > 4)
+	                {
+	                	System.out.println("Locked Account");
+	                }
+	                else
+	                {
+	                	incrementLoginAttempts();
+	                	System.out.println("Invalid Password");
+	                }
+
+	            }
+	            else
+	            {
+	            	lp.accountIsNotInDB();
+	            }
+	            
+	            if(rset.getString(1) == rset.getString(1))
+	            {
+	            	System.out.print("AHHH YEA");
+	            }
+			}
+	    		
+			catch (SQLException ex) {
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+			}
+		
+	}
+	public void getLoginAttempts()
+	{
+		url = "jdbc:mysql://localhost:3306/userdatabase";
+    	try
+    	{
+			conn = DriverManager.getConnection(url, user, dpassword);
+            stmt = conn.createStatement();
+    		rset = stmt.executeQuery("SELECT attempts FROM userdatabase.user WHERE username =" + "'" +_account+"';");
+    		if (rset.next()) 
+	        {
+          		attempts = rset.getInt(1);
+	        }
+    	}
+    	catch (SQLException ex) 
+    	{
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+	
+	}
+	public void incrementLoginAttempts()
+	{
+		attempts++;
+		url = "jdbc:mysql://localhost:3306/userdatabase";
+    	try
+    	{
+			conn = DriverManager.getConnection(url, user, dpassword);
+            stmt = conn.createStatement();
+        	stmt.executeUpdate("UPDATE userdatabase.user SET attempts = '" +attempts+"' WHERE username = '"+_account+"';");
+    	}
+    	catch (SQLException ex) 
+    	{
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+	}
+	public void resetLoginAttempts()
+	{
+		url = "jdbc:mysql://localhost:3306/userdatabase";
+    	try
+    	{
+			conn = DriverManager.getConnection(url, user, dpassword);
+            stmt = conn.createStatement();
+        	stmt.executeUpdate("UPDATE userdatabase.user SET attempts = '" +0+"' WHERE username = '"+_account+"';");
+    	}
+    	catch (SQLException ex) 
+    	{
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
 	}
 	public void setSelection(int select)
 	{
 		dataBaseSelect = select;
 	}
-
-	public void setQuery(String queryentry)
-	{
-		query = queryentry;
-	}
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
 		DBaseConnection dbc = new DBaseConnection();

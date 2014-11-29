@@ -36,11 +36,12 @@ public class Client {
 	//    to be opened on top of the socket
 	private BufferedReader datain;
 	private DataOutputStream dataout;
+	private GUIRoot _guiRoot;
 
 	  	
-	public Client ()
+	public Client (GUIRoot gr)
 	{
-		
+		_guiRoot = gr;
 		try {
 			System.out.print("Connect:");
 			// -- construct the peer to peer socket
@@ -58,15 +59,15 @@ public class Client {
 		
 	}
 	
-	public String sendString (String _msg)
+	
+	public String sendString (String _msg, String account, String password, String email )
 	{
 		String rtnmsg = "";
-
 		try {
 			// -- the server only receives String objects that are
 			//    terminated with a newline \n"
 			// -- send the String making sure to flush the buffer
-			dataout.writeBytes(_msg + "\n");
+			dataout.writeBytes(_msg + "," + account+ "," + password + "," + email + "\n");
 			dataout.flush();
 			
 			// -- receive the response from the server
@@ -113,13 +114,13 @@ public class Client {
 	public static void main(String[] args) {
 		// -- instantiate a Client object
 		//    the constructor will attempt to connect to the server
-		Client client = new Client();
+		//Client client = new Client();
 		
 		// -- send message to server and receive reply.
-		String commandString = "hello";
+	/*	String commandString = "hello";
 		System.out.println("CLIENT send:  " + commandString);
-		String replyString = client.sendString(commandString);
-		System.out.println("CLIENT receive: " + replyString);
+		//String replyString = client.sendString(commandString);
+		//System.out.println("CLIENT receive: " + replyString);
 		
 		for (int i = 0; i < 60; ++i) {
 			try {
@@ -134,7 +135,7 @@ public class Client {
 			System.out.println("CLIENT receive: " + replyString);
 		}
 
-		client.disconnect();
+		client.disconnect();**/
 	}
 
 }
