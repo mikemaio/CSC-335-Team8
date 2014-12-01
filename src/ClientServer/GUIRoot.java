@@ -1,5 +1,6 @@
 package ClientServer;
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -21,6 +22,7 @@ public class GUIRoot extends JFrame {
 		JPanel controlPanel = new JPanel();
 		//Cases for Page Choice
 		public int pageSelection = 1;
+		public static Color BACKGROUND = Color.lightGray;
 		
 		public GUIRoot (int height, int width)
 		{
