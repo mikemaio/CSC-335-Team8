@@ -5,112 +5,94 @@ import java.awt.GridLayout;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.SwingConstants;
 
 public class ChangePassPanel extends JPanel {
-	
 	private GUIRoot gr;
 	private JButton changeChP = new JButton("Change Password");
 	private JButton backChP = new JButton("Back");
-	private TextField accountChP = new TextField("Account Name...");
-	private JPasswordField oldPassChP = new JPasswordField();
-	private JPasswordField newPassChP= new JPasswordField();
-	private JPasswordField confirmNewPassChP = new JPasswordField();
-	private JLabel Username = new JLabel("Username: ", SwingConstants.RIGHT);
-	private JLabel OldPassword = new JLabel("Old Password: ", SwingConstants.RIGHT);
-	private JLabel NewPassword = new JLabel("New Password: ", SwingConstants.RIGHT);
-	private JLabel NewPasswordConfirm = new JLabel("New Password: ", SwingConstants.RIGHT);
-	private JLabel EndLine1 = new JLabel("", SwingConstants.CENTER);
-	private JLabel EndLine2 = new JLabel("", SwingConstants.CENTER);
+	private TextField accountChP = new TextField("");
+	private TextField oldPassChP = new TextField("");
+	private TextField newPassChP= new TextField("");
+	private TextField confirmNewPassChP = new TextField("");
+	private JLabel accountEntryChP = new JLabel("Enter Account Name : ");
+	private JLabel oldPassEntryChP = new JLabel("Enter Old Password : ");
+	private JLabel newPassEntryChP = new JLabel("Enter New Password : ");
+	private JLabel confirmPassChP  = new JLabel("Confirm New Password : ");
 
 	public ChangePassPanel(GUIRoot _gr)
 	{
 		super();
 		
 		gr = _gr;
-
+		//add Parts
 		JPanel window = new JPanel();
-		GridLayout windowLayout = new GridLayout(4,1);
-		window.setLayout(windowLayout);
+    	GridLayout windowLayout = new GridLayout(10,1);
+    	window.setLayout(windowLayout);
 
-		window.add(Username);
+    	window.add(accountEntryChP);
 		window.add(accountChP);
-		window.add(OldPassword);
+		window.add(oldPassEntryChP);
 		window.add(oldPassChP);
-		window.add(NewPassword);
+		window.add(newPassEntryChP);
 		window.add(newPassChP);
-		window.add(NewPasswordConfirm);
+		window.add(confirmPassChP);
 		window.add(confirmNewPassChP);
+		window.add(changeChP);
+		window.add(backChP);
 		this.add(window);
-
-		JPanel buttons = new JPanel();
-		GridLayout buttonLayout = new GridLayout(4,1);
-		buttons.setLayout(buttonLayout);
-		buttons.add(changeChP);
-		buttons.add(backChP);
-		buttons.add(EndLine1);
-		buttons.add(EndLine2);
-		this.add(buttons);
-
-		this.setBackground(GUIRoot.BACKGROUND);
-		Username.setOpaque(true);
-		Username.setBackground(GUIRoot.BACKGROUND);
-		OldPassword.setOpaque(true);
-		OldPassword.setBackground(GUIRoot.BACKGROUND);
-		NewPassword.setOpaque(true);
-		NewPassword.setBackground(GUIRoot.BACKGROUND);
-		NewPasswordConfirm.setOpaque(true);
-		NewPasswordConfirm.setBackground(GUIRoot.BACKGROUND);
-		EndLine1.setOpaque(true);
-		EndLine1.setBackground(GUIRoot.BACKGROUND);
-		EndLine2.setOpaque(true);
-		EndLine2.setBackground(GUIRoot.BACKGROUND);
 		
 		changeChP.addActionListener(
 				new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						
-						boolean correctFormat = true;
+					public void actionPerformed(ActionEvent arg0) 
+						{
+												
+						if (!accountChP.getText().equals("") && 
+								!oldPassChP.getText().equals("") &&
+								!newPassChP.getText().equals("") &&
+								!confirmNewPassChP.getText().equals("")) 
+						{
 
-						//Username is valid
 
-						//old password is valid
+							if (validPassword()) {
 
-						//password length is correct
-						if (newPassChP.getPassword().length >= UserHandling.USERMIN) {
-							NewPassword.setText("Password: ");
-						} else {
-							NewPassword.setText("<html><font color='red'>Password is too short.</font></html>");
-							correctFormat = false;
-						}
+								if(checkPassword())
+								{
 
-						//password and password confirm are the same
-						if (Arrays.equals(newPassChP.getPassword(),confirmNewPassChP.getPassword())) {
-							NewPasswordConfirm.setText("Confirm Password: ");
-						} else {
-							NewPasswordConfirm.setText("<html><font color='red'>Passwords don't match.</font></html>");
-							correctFormat = false;
-						}
-
-						if (correctFormat == true) {
-							//Change password
-
-							/*UserHandling.sendEmail(email, 
-									"Your password has been changed. \n\n
-									If this is not correct, please change your password." 
-									+ accountChP.getText());*/
-							EndLine1.setText("<html><font color='blue'>Password changed!  </font></html>");
-							EndLine2.setText("<html><font color='blue'>Please log in.  </font></html>");
-
-						} else {
-							//-1 tries
-							System.out.println("BAD");
-							System.out.println("");
+									gr.clientOne.sendString("changepassword",accountChP.getText(),oldPassChP.getText(),newPassChP.getText());
+									String delims = "[,]";
+									String recievedData[] = gr.clientOne.getflowValues().split(delims);
+									if(recievedData[0].equals("success"))
+									{
+										JOptionPane.showMessageDialog(changeChP, "Success");
+										clearFields();
+										gr.refreshGUI(2);
+									}
+									else if(recievedData[0].equals("oldpasswordfail"))
+									{
+										JOptionPane.showMessageDialog(changeChP, "Your old password did not match the one on file try again.");
+										clearFields();
+									}
+									else if(recievedData[0].equals("missing"))
+									{
+										JOptionPane.showMessageDialog(changeChP, "The Account you entered does not exist...Try Again");
+										clearFields();
+									}
+									else
+									{
+										System.out.println("Error with password change field");
+									}
+								}
+								else
+								{
+									JOptionPane.showMessageDialog(changeChP, "New passwords do not match.");
+									clearFields();
+								}
+							}
 						}
 					}
 				}
@@ -127,5 +109,50 @@ public class ChangePassPanel extends JPanel {
 		
 
 	}
+	public boolean checkPassword()
+	{
+		if(newPassChP.getText().equals(confirmNewPassChP.getText()))
+		{
+			return true;
+		}
+		return false;
+	}
+	public void clearFields()
+	{
+		accountChP.setText("");
+		oldPassChP.setText("");
+		newPassChP.setText("");
+		confirmNewPassChP.setText("");	
+	}
+	
+	public boolean validPassword() 
+	{ 
+		boolean correctFormat = true;
+		boolean passNum = false;
+		boolean passLower = false;
+		boolean passUpper = false;
 
+		for(int i = 0; i < newPassChP.getText().length(); i++) {
+			if (Character.isDigit(newPassChP.getText().charAt(i))) 
+			{
+				passNum = true;
+			}
+			if (Character.isLowerCase(newPassChP.getText().charAt(i))) 
+			{
+				passLower = true;
+			}
+			if (Character.isUpperCase(newPassChP.getText().charAt(i))) 
+			{
+				passUpper = true;
+			}
+		}
+
+		if (!(passNum && passLower && passUpper)) {
+			JOptionPane.showMessageDialog(changeChP, "Password must have at least one lowercase letter, one uppercase letter, and one number in it.");
+			newPassChP.setText("");
+			confirmNewPassChP.setText("");
+			correctFormat = false;
+		}
+		return correctFormat;
+	}
 }
