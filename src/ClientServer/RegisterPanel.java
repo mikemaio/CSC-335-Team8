@@ -1,159 +1,154 @@
 package ClientServer;
 
 import java.awt.Color;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.SwingConstants;
-
 
 public class RegisterPanel extends JPanel{
 	
 	private GUIRoot gr;
 	private JButton createRegP = new JButton("Create Account");
 	private JButton backRegP = new JButton("Back");
-	private TextField accountRegP = new TextField("Account Name...");
-	private TextField emailRegP = new TextField("Email...");
-	private TextField emailConfirmRegP= new TextField("Confirm Email...");
-	private JPasswordField passwordRegP = new JPasswordField("");
-	private JPasswordField confirmpassRegP = new JPasswordField("");
-	private JLabel Username = new JLabel("Username: ", SwingConstants.RIGHT);
-	private JLabel Email = new JLabel("Email: ", SwingConstants.RIGHT);
-	private JLabel EmailConfirm = new JLabel("Confirm Email: ", SwingConstants.RIGHT);
-	private JLabel Password = new JLabel("Password: ", SwingConstants.RIGHT);
-	private JLabel PasswordConfirm = new JLabel("Confirm Password: ", SwingConstants.RIGHT);
-	private JLabel EndLine1 = new JLabel("", SwingConstants.CENTER);
-	private JLabel EndLine2 = new JLabel("", SwingConstants.CENTER);
+	private TextField accountRegP = new TextField("");
+	private TextField emailRegP = new TextField("");
+	private TextField emailConfirmRegP= new TextField("");
+	private TextField passwordRegP = new TextField("");
+	//private JPasswordField passwordRegP = new JPasswordField("");
+	private TextField confirmPassRegP = new TextField("");
+	private JLabel accountEntryRegP = new JLabel("Enter Desired Account Name : ");
+	private JLabel emailEntryRegP = new JLabel("Enter Desired Email : ");
+	private JLabel emailReEntryRegP = new JLabel("Re-Enter Desired Email : ");
+	private JLabel passwordEntryRegP = new JLabel("Enter Desired Password : ");
+	private JLabel passwordReEntryRegP = new JLabel("Re-Enter Desired Password : ");
 	
+	private int USERMIN = 5;
+	private static String emailregex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	private static Pattern pattern = Pattern.compile(emailregex);
+
+	
+
+
 	public RegisterPanel(GUIRoot _gr)
 	{
 		super();
 		
-		gr = _gr;
-
-		this.setBackground(GUIRoot.BACKGROUND);
-	
+		gr = _gr;		
+		
+		//add Parts
 		JPanel window = new JPanel();
-    		GridLayout windowLayout = new GridLayout(7,1);
-    		window.setLayout(windowLayout);
+    	GridLayout windowLayout = new GridLayout(12,1);
+    	window.setLayout(windowLayout);
 
-
-    		window.add(Username);
+    	window.add(accountEntryRegP);
 		window.add(accountRegP);
-    		window.add(Email);
+    	window.add(emailEntryRegP);
 		window.add(emailRegP);
-		window.add(EmailConfirm);
+    	window.add(emailReEntryRegP);
 		window.add(emailConfirmRegP);
-		window.add(Password);
+    	window.add(passwordEntryRegP);
 		window.add(passwordRegP);
-		window.add(PasswordConfirm);
-		window.add(confirmpassRegP);
+    	window.add(passwordReEntryRegP);
+		window.add(confirmPassRegP);
+		window.add(createRegP);
+		window.add(backRegP);
 		this.add(window);
 		
-		JPanel buttons = new JPanel();
-		GridLayout buttonLayout = new GridLayout(4,1);
-		buttons.setLayout(buttonLayout);
-		
-		buttons.add(createRegP);
-		buttons.add(backRegP);
-		buttons.add(EndLine1);
-		buttons.add(EndLine2);
-		this.add(buttons);
-		
-		Username.setOpaque(true);
-		Username.setBackground(GUIRoot.BACKGROUND);
-		Email.setOpaque(true);
-		Email.setBackground(GUIRoot.BACKGROUND);
-		EmailConfirm.setOpaque(true);
-		EmailConfirm.setBackground(GUIRoot.BACKGROUND);
-		Password.setOpaque(true);
-		Password.setBackground(GUIRoot.BACKGROUND);
-		PasswordConfirm.setOpaque(true);
-		PasswordConfirm.setBackground(GUIRoot.BACKGROUND);
-		EndLine1.setOpaque(true);
-		EndLine1.setBackground(GUIRoot.BACKGROUND);
-		EndLine2.setOpaque(true);
-		EndLine2.setBackground(GUIRoot.BACKGROUND);
-		
-				createRegP.addActionListener(
+		createRegP.addActionListener(
 				new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						
+					public void actionPerformed(ActionEvent arg0) 
+					{
+						String account = accountRegP.getText();
+						String password = passwordRegP.getText();
+						String email = emailRegP.getText(); 
+						gr.clientOne.sendString("registerprocedure",account,password,email);
+						String delims = "[,]";
+						String recievedData[] = gr.clientOne.getflowValues().split(delims);
 						boolean correctFormat = true;
-						String email = emailRegP.getText();
 						
-						//Username length is correct
-						if (accountRegP.getText().length() >= UserHandling.USERMIN) {
-							Username.setText("Username: ");
-						} else {
-							Username.setText("<html><font color='red'>Username is too short.</font></html>");
+						if (accountRegP.getText().length() < USERMIN) 
+						{
+							JOptionPane.showMessageDialog(createRegP, "Username must be at least 5 characters long.");
+							accountRegP.setText("");
 							correctFormat = false;
 						}
-						//password length is correct
-						if (passwordRegP.getPassword().length >= UserHandling.USERMIN) {
-							Password.setText("Password: ");
-						} else {
-							Password.setText("<html><font color='red'>Password is too short.</font></html>");
+						if (passwordRegP.getText().length() < USERMIN) 
+						{
+							JOptionPane.showMessageDialog(createRegP, "Password must be at least 5 characters long.");
+							passwordRegP.setText("");
+							confirmPassRegP.setText("");
 							correctFormat = false;
 						}
 						
-						//password contains one letter and one number 
-						//DOES NOT WORK
-						/*if (///////)) {
-							System.out.println("Valid characters");
-						} else {
-							System.out.println("Password does not contain all characters");
-							EndLine1.setText("<html><font color='red'>Password must have one</font></html>");
-							EndLine2.setText("<html><font color='red'>letter and one number.</font></html>");
+						if (!passwordRegP.getText().equals(confirmPassRegP.getText())) 
+						{
+							JOptionPane.showMessageDialog(createRegP, "Passwords do not match.");
+							confirmPassRegP.setText("");
 							correctFormat = false;
+						}
+						
+						if (!validEmailAddress(email)) 
+						{
+							JOptionPane.showMessageDialog(createRegP, "Invalid email address.");
+							emailRegP.setText("");
+							emailConfirmRegP.setText("");
+							correctFormat = false;
+						}
+						
+						if(!emailRegP.getText().equals(emailConfirmRegP.getText()))
+						{
+							JOptionPane.showMessageDialog(createRegP, "Emails do not match.");
+							emailConfirmRegP.setText("");
+							correctFormat = false;
+						}
+						
+						if (recievedData[0].equals("exists"))
+						{
+							JOptionPane.showMessageDialog(createRegP, "Desired username already exists.");
+							accountRegP.setText("");
+							correctFormat = false;
+						}
+						
+						if (correctFormat) 
+						{
+							clearFields();
+							JOptionPane.showMessageDialog(createRegP, "Account Created!!!!");
+							gr.refreshGUI(2);
+						}
+							
+						/*if (correctFormat) {
+							gr.clientOne.sendString("registerprocedure",account,password,email);
+							String delims = "[,]";
+							String recievedData[] = gr.clientOne.getflowValues().split(delims);
+							if(recievedData[0].equals("created"))
+							{
+								clearFields();
+								JOptionPane.showMessageDialog(createRegP, "Account Created!!!!");
+								gr.refreshGUI(2);
+							}
+							else if(recievedData[0].equals("exists"))
+							{
+								clearFields();
+								JOptionPane.showMessageDialog(createRegP, "The account desired already exists please try again.");
+								confirmPassRegP.setText("");
+
+							}
+							else
+							{
+								System.out.println("Error with Register panel");
+							}
 						}*/
-						
-						//password and password confirm are the same
-						if (Arrays.equals(passwordRegP.getPassword(),confirmpassRegP.getPassword())) {
-							PasswordConfirm.setText("Confirm Password: ");
-						} else {
-							PasswordConfirm.setText("<html><font color='red'>Passwords don't match.</font></html>");
-							correctFormat = false;
-						}
-						
-						//email and email confirm are the same
-						if (emailRegP.getText().equals(emailConfirmRegP.getText())) {
-							EmailConfirm.setText("Confirm Email: ");
-						} else {
-							EmailConfirm.setText("<html><font color='red'>Emails don't match.</font></html>");
-							correctFormat = false;
-						}
-						
-						//email address is valid
-						if (UserHandling.validEmailAddress(email)) {
-							Email.setText("Email: ");
-						} else {
-							Email.setText("<html><font color='red'>Invalid Email.</font></html>");
-							correctFormat = false;
-						}
-						
-						//everything is correct
-						if (correctFormat == true) {
-							//register in server
-							
-							UserHandling.sendEmail(email, 
-									"You have registered!\n\nYour username is: " 
-									+ accountRegP.getText());
-							EndLine1.setText("<html><font color='blue'>Email sent!</font></html>");
-							EndLine2.setText("<html><font color='blue'>Please log in.</font></html>");
-							
-						} else {
-							System.out.println("BAD");
-							System.out.println("");
-						}
+						//clearFields();
+
 					}
 				}
 			);
@@ -167,4 +162,20 @@ public class RegisterPanel extends JPanel{
 			);
 
 	}
+	public void clearFields()
+	{
+		accountRegP.setText("");
+		passwordRegP.setText("");
+		emailRegP.setText("");
+		emailConfirmRegP.setText("");
+		confirmPassRegP.setText("");
+		
+	}
+	
+    public static boolean validEmailAddress (String emailaddress)
+    {
+        Matcher matcher = pattern.matcher(emailaddress);
+        return matcher.find();
+    }
+	
 }
