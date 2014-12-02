@@ -147,6 +147,9 @@ public class RegisterPanel extends JPanel{
 						{
 							clearFields();
 							JOptionPane.showMessageDialog(createRegP, "Account Created!!!!");
+							Client.sendEmail(email, 
+									"You have registered!\n\nYour username is: " 
+									+ account + "\n\n Your password is: " + password);
 							gr.refreshGUI(2);
 						}
 							
