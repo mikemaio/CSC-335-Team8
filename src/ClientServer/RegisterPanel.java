@@ -71,7 +71,12 @@ public class RegisterPanel extends JPanel{
 						String password = passwordRegP.getText();
 						String email = emailRegP.getText(); 
 						
-						
+						if (!accountRegP.getText().equals("") && 
+								!emailRegP.getText().equals("") &&
+								!emailConfirmRegP.getText().equals("") &&
+								!passwordRegP.getText().equals("") &&
+								!confirmPassRegP.getText().equals("")) {
+							
 						if (correctFields()) 
 						{
 							gr.clientOne.sendString("registerprocedure",account,password,email);
@@ -93,6 +98,9 @@ public class RegisterPanel extends JPanel{
 												+ account + "\n\n Your password is: " + password);
 								gr.refreshGUI(2);
 							}
+						}
+						} else {
+							JOptionPane.showMessageDialog(createRegP, "Please fill out all fields.");
 						}
 					}
 				}
@@ -153,6 +161,8 @@ public class RegisterPanel extends JPanel{
 		
 		if (!(passNum && passLower && passUpper)) {
 			JOptionPane.showMessageDialog(createRegP, "Password must have at least one lowercase letter, one uppercase letter, and one number in it.");
+			passwordRegP.setText("");
+			confirmPassRegP.setText("");
 			correctFormat = false;
 		}
 		
@@ -185,8 +195,6 @@ public class RegisterPanel extends JPanel{
 			emailConfirmRegP.setText("");
 			correctFormat = false;
 		}
-		
-		
 		
     	return correctFormat;
     }
