@@ -74,6 +74,10 @@ public class RegisterPanel extends JPanel{
 						String delims = "[,]";
 						String recievedData[] = gr.clientOne.getflowValues().split(delims);
 						boolean correctFormat = true;
+						boolean passNum = false;
+						boolean passLower = false;
+						boolean passUpper = false;
+
 						
 						if (accountRegP.getText().length() < USERMIN) 
 						{
@@ -81,6 +85,27 @@ public class RegisterPanel extends JPanel{
 							accountRegP.setText("");
 							correctFormat = false;
 						}
+						
+						for(int i = 0; i < password.length(); i++) {
+							if (Character.isDigit(password.charAt(i))) 
+							{
+								passNum = true;
+							}
+							if (Character.isLowerCase(password.charAt(i))) 
+							{
+								passLower = true;
+							}
+							if (Character.isUpperCase(password.charAt(i))) 
+							{
+								passUpper = true;
+							}
+						}
+						
+						if (!(passNum && passLower && passUpper)) {
+							JOptionPane.showMessageDialog(createRegP, "Password must have at least one lowercase letter, one uppercase letter, and one number in it.");
+							correctFormat = false;
+						}
+						
 						if (passwordRegP.getText().length() < USERMIN) 
 						{
 							JOptionPane.showMessageDialog(createRegP, "Password must be at least 5 characters long.");
