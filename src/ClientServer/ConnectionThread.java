@@ -93,23 +93,38 @@ public class ConnectionThread extends Thread {
 				else if (recievedData[0].equals("loginprocedure")) 
 				{
 					//dataout.writeBytes(":)" + "/n");
-					db.setSelection(2);
 					db.executeLogin(recievedData[1], recievedData[2]);
-					dataout.writeBytes("Sent Hello" + "\n");
+					System.out.println("values :" + db.getflowValues());
+					dataout.writeBytes(db.getflowValues() + "\n");
 					dataout.flush();
 					//dataout.flush();
 					
 					
 				
 				}
-				else if (txt.equals("register"))
+				else if (recievedData[0].equals("registerprocedure"))
 				{
-					db.setSelection(2);
-					db.executeQ();
-					dataout.writeBytes("Sent Hello" + "\n");
+					db.createAccount(recievedData[1],recievedData[2],recievedData[3]);
+					System.out.println("values for register:" + db.getflowValues());
+					dataout.writeBytes(db.getflowValues() + "\n");
 					dataout.flush();
 					
 					
+				}
+				else if (recievedData[0].equals("changepassword"))
+				{
+					db.changePassword(recievedData[1],recievedData[2],recievedData[3]);
+					dataout.writeBytes(db.getflowValues() + "\n");
+					dataout.flush();
+				}
+				else if (recievedData[0].equals("queryusers"))
+				{
+					
+					int users;
+					db.userQuery();
+					users = server.getClientconnections().size();
+					dataout.writeBytes("users"+ "," + users + "\n");
+					dataout.flush();
 				}
 				else {
 					System.out.println("unrecognized command >>" + txt + "<<");

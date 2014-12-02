@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -25,9 +26,11 @@ private JButton recoverLP = new JButton("Recover Password");
 private JButton registerLP = new JButton("Register");
 private JButton changepassLP = new JButton("Change Password");
 private JButton disconnectLP = new JButton("Disconnect");
-public static TextField accountLP = new TextField();
-public static TextField passwordLP = new TextField();
-public int loginCase = 1;
+private TextField accountLP = new TextField();
+private static TextField passwordLP = new TextField();
+private  JLabel accountLabelLP = new JLabel("Account : ");
+private  JLabel passwordLabelLP = new JLabel("Password : ");
+
 
 	
 	
@@ -41,15 +44,14 @@ public int loginCase = 1;
 
 		gr = _gr;
 
-		this.setBackground(Color.red);
-		this.setBackground(Color.red);		
 		//add Parts
 		JPanel window = new JPanel();
-    	GridLayout windowLayout = new GridLayout(7,1);
+    	GridLayout windowLayout = new GridLayout(9,1);
     	window.setLayout(windowLayout);
 
-
+    	window.add(accountLabelLP);
 		window.add(accountLP);
+    	window.add(passwordLabelLP);
 		window.add(passwordLP);
 		window.add(loginLP);
 		window.add(registerLP);
@@ -58,15 +60,6 @@ public int loginCase = 1;
 		window.add(disconnectLP);
 		
 		this.add(window);
-		accountLP.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						accountLP.validate();
-						//DBaseConnection.account = accountLP.getText();
-						System.out.print("trigger");
-					}
-				}
-			);
 		loginLP.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
@@ -74,24 +67,28 @@ public int loginCase = 1;
 						String account = accountLP.getText();
 						String password = passwordLP.getText();
 						String txt = gr.clientOne.sendString("loginprocedure",account,password,null);
-						System.out.println(txt);
-						switch(loginCase)
+						String delims = "[,]";
+						String recievedData[] = gr.clientOne.getflowValues().split(delims);
+						if(recievedData[0].equals("success"))
 						{
-
-						case 1:
 							gr.refreshGUI(6);
-							break;
-						case 2:
-							accountLocked();
-							break;
-						case 3:
-							accountIsNotInDB();
-							break;
-						default:
-							System.out.println("There is an error with the DB selection");
-							break;
 						}
-						System.out.print(accountLP.getText());
+						else if(recievedData[0].equals("locked"))
+						{
+							accountLocked();
+						}
+						else if(recievedData[0].equals("invalid"))
+						{
+							invalidPassword();
+						}
+						else if(recievedData[0].equals("missing"))
+						{
+							accountIsNotInDB();
+						}
+						else
+						{
+							System.out.println("Error with Login Panel");
+						}
 					}
 				}
 			);
@@ -106,8 +103,6 @@ public int loginCase = 1;
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						gr.refreshGUI(4);
-						String txt = gr.clientOne.sendString("register",null,null,null);
-						System.out.println(txt);
 					}
 				}
 			);
@@ -140,7 +135,7 @@ public int loginCase = 1;
 	{
 		accountLP.setText("");
 		passwordLP.setText("");
-		JOptionPane.showMessageDialog(loginLP, "Invalid Password Try Again");
+		JOptionPane.showMessageDialog(loginLP, "Invalid Password Try Again.");
 	}
 	public void accountLocked()
 	{
@@ -148,11 +143,10 @@ public int loginCase = 1;
 	}
 	public void accountIsNotInDB()
 	{
-		JOptionPane.showMessageDialog(loginLP, "The account entered is not listed");
+		accountLP.setText("");
+		passwordLP.setText("");
+		JOptionPane.showMessageDialog(loginLP, "The account entered is not listed.");
 	}
-	public void setCase(int x)
-	{
-		loginCase = x;
-	}
+
 
 }

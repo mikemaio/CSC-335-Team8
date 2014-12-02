@@ -19,6 +19,10 @@ public class Server {
 	private Vector<ConnectionThread> clientconnections;
 	
 	
+	public Vector<ConnectionThread> getClientconnections() {
+		return clientconnections;
+	}
+
 	public int getPort()
 	{
 		return PORT;

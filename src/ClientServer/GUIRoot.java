@@ -1,5 +1,7 @@
 package ClientServer;
 import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -34,8 +36,24 @@ public class GUIRoot extends JFrame {
 			setSize(width, height);
 			
 			setLocationRelativeTo(null);
-			
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+			addWindowListener(new WindowAdapter()
+	        {
+	            @Override
+	            public void windowClosing(WindowEvent e)
+	            {
+	            	if(clientOne != null)
+	            	{
+	            		clientOne.disconnect();
+	            		System.out.println("Client Closed");
+	            	}
+	            	else
+	            	{	
+	            		System.out.println("Closed");
+	            		e.getWindow().dispose();
+	            	}
+	            }
+	        });
 
 			// -- set the layout manager and add items
 			//    5, 5 is the border around the edges of the areas		

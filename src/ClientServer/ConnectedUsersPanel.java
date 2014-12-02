@@ -38,6 +38,9 @@ public class ConnectedUsersPanel extends JPanel {
 		usersCheckCuP.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
+						gr.clientOne.sendString("queryusers", null, null, null);
+						String users = gr.clientOne.getUserQueryValue() + "";
+						userDisplayCuP.setText("Users connected" + users);
 					}
 				}
 			);

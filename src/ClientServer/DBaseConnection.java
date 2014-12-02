@@ -31,7 +31,14 @@ public class DBaseConnection {
     //    (DBA sets all which works fine)
     private String user = "Mike";
     private String dpassword = "test123";
-
+    //values to determine completetion of commands for conenction thread
+    private String flowValues = "";
+    //user entered 
+    private String newPassword = "";
+    //account exists/doesnt variable
+    private boolean accountExists = true;
+    //account old Password confirmation
+    private boolean oldPassword = false;
 	public DBaseConnection() {
 	}
 	
@@ -107,28 +114,29 @@ public class DBaseConnection {
 	                if(accountTest.equals(password) && attempts < 4 )
 	                {
 	                	resetLoginAttempts();
+	                	setflowValues("success"+ "," + "account");
 	                	System.out.print("AHHH YEA");
 	                }
 	                else if(attempts > 4)
 	                {
+	                	setflowValues("locked"+ "," + "account");
 	                	System.out.println("Locked Account");
 	                }
 	                else
 	                {
 	                	incrementLoginAttempts();
+	                	setflowValues("invalid"+ "," + "account");
 	                	System.out.println("Invalid Password");
 	                }
 
 	            }
 	            else
 	            {
-	            	lp.accountIsNotInDB();
+	            	setflowValues("missing"+ "," + "account");
+	            	System.out.println("account not in DB");
+	            	//lp.accountIsNotInDB();
 	            }
-	            
-	            if(rset.getString(1) == rset.getString(1))
-	            {
-	            	System.out.print("AHHH YEA");
-	            }
+	       
 			}
 	    		
 			catch (SQLException ex) {
@@ -149,7 +157,9 @@ public class DBaseConnection {
     		rset = stmt.executeQuery("SELECT attempts FROM userdatabase.user WHERE username =" + "'" +_account+"';");
     		if (rset.next()) 
 	        {
+    			System.out.println(attempts);
           		attempts = rset.getInt(1);
+    			System.out.println(attempts);
 	        }
     	}
     	catch (SQLException ex) 
@@ -160,6 +170,70 @@ public class DBaseConnection {
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
 	
+	}
+	public void checkForExistingAcc()
+	{
+		url = "jdbc:mysql://localhost:3306/userdatabase";
+    	try
+    	{
+			conn = DriverManager.getConnection(url, user, dpassword);
+            stmt = conn.createStatement();
+    		rset = stmt.executeQuery("SELECT username FROM userdatabase.user WHERE username =" + "'" +_account+"';");
+    		if (rset.next()) 
+	        {
+          		System.out.println("account exists");
+          		accountExists = true;
+	        }	
+    		else
+    		{
+    			System.out.println("Account doesnt exist");
+    			accountExists = false;
+    		}
+    		
+    	}
+    	catch (SQLException ex) 
+    	{
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+	}
+	public void createAccount(String account, String password, String email)
+	{
+		_account = account;
+		url = "jdbc:mysql://localhost:3306/userdatabase";
+    	try
+    	{
+			conn = DriverManager.getConnection(url, user, dpassword);
+            stmt = conn.createStatement();
+            checkForExistingAcc();
+            System.out.println(accountExists);
+            if(!accountExists)
+            {
+            	stmt.executeUpdate("INSERT INTO userdatabase.user(username, email, password, attempts) VALUES ('" +account+"','"+email+"','"+password+"', 0);");
+            	setflowValues("created"+ "," + "account");
+            	System.out.println("competed account add");
+            }
+            else
+            {
+            	setflowValues("exists"+ "," + "account");
+            	System.out.println("Account Existed");
+            }
+            
+    	}
+    	catch (SQLException ex) 
+    	{
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+  
+	}
+	public void userQuery()
+	{
+    	setflowValues("user"+ "," + "user");
 	}
 	public void incrementLoginAttempts()
 	{
@@ -200,11 +274,113 @@ public class DBaseConnection {
 	{
 		dataBaseSelect = select;
 	}
-	public static void main(String[] args) {
+	public void changePassword(String accName, String oldPass, String newPass)
+	{
+		_account = accName;
+		//check for password match
+		checkForExistingAcc();
+		checkMatchedPassword(oldPass, newPass);
+		url = "jdbc:mysql://localhost:3306/userdatabase";
+		if(accountExists)
+		{
+			if(oldPassword)
+			{
+		    	try
+		    	{
+					conn = DriverManager.getConnection(url, user, dpassword);
+		            stmt = conn.createStatement();
+		        	stmt.executeUpdate("UPDATE userdatabase.user SET password = '"+newPass+"' WHERE username = '"+_account+"';");
+		        	setflowValues("success"+ "," + "account");
+		    	}
+		    	catch (SQLException ex) 
+		    	{
+					// handle any errors
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+			}
+			else
+			{
+				
+				//case
+				setflowValues("oldpasswordfail" + "," + "account");
+				System.out.println("Account old password does not match");
+			}
+		}
+		else
+		{
+			//case
+			setflowValues("missing"+ "," + "account");
+			System.out.println("Account entered does not Exist");
+		}
+	}
+	public void checkMatchedPassword(String oldPass, String newPass)
+	{
+		url = "jdbc:mysql://localhost:3306/userdatabase";
+    	try
+    	{
+			conn = DriverManager.getConnection(url, user, dpassword);
+            stmt = conn.createStatement();
+        	rset = stmt.executeQuery("SELECT password FROM userdatabase.user WHERE username =" + "'" +_account+"';");
+        	 if (rset.next()) 
+	            {
+	            	
+	            	String accountTest = null;
+	            	accountTest = rset.getString(1);
+	            	System.out.println(accountTest);
+	            	System.out.println(oldPass);
+	                if(accountTest.equals(oldPass))
+	                {
+	                	oldPassword = true;
+	                	resetLoginAttempts();
+	                	System.out.print("Passwords matched");
+	                }
+	                else
+	                {
+	                	System.out.println("Invalid Password Match");
+	                }
+
+	            }
+    	}
+    	catch (SQLException ex) 
+    	{
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+	}
+	public void checkPasswordExp()
+	{
+		url = "jdbc:mysql://localhost:3306/userdatabase";
+    	try
+    	{
+			conn = DriverManager.getConnection(url, user, dpassword);
+            stmt = conn.createStatement();
+        	stmt.executeUpdate("UPDATE userdatabase.user SET password = '" +newPassword+"' WHERE username = '"+_account+"';");
+    	}
+    	catch (SQLException ex) 
+    	{
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+	}
+public static void main(String[] args) {
 
 		DBaseConnection dbc = new DBaseConnection();
 	
 
+	}
+
+	public String getflowValues() {
+		return flowValues;
+	}
+
+	public void setflowValues(String flowValues) {
+		this.flowValues = flowValues;
 	}
 
 }

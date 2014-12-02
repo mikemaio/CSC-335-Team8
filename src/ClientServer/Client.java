@@ -37,8 +37,28 @@ public class Client {
 	private BufferedReader datain;
 	private DataOutputStream dataout;
 	private GUIRoot _guiRoot;
-
+	//loging values sent from connection thread
+	private String flowValues = "";
+	//user values
+	private int usersConnected;
 	  	
+	public String getflowValues() {
+		return flowValues;
+	}
+
+	public void setUserQueryValue(int users)
+	{
+		this.usersConnected = users;
+	}
+	public int getUserQueryValue()
+	{
+		return usersConnected;
+	}
+	public void setflowValues(String Values) {
+		this.flowValues = Values;
+	}
+
+
 	public Client (GUIRoot gr)
 	{
 		_guiRoot = gr;
@@ -76,7 +96,51 @@ public class Client {
 			//    that to occur.
 			rtnmsg = "";
 			do {
+				
 				rtnmsg = datain.readLine();
+				//put into if statements for potential future use
+				String delims = "[,]";
+				String recievedData[] = rtnmsg.split(delims);
+				if(recievedData[0].equals("success") && recievedData[1].equals("account"))
+				{
+					flowValues = rtnmsg;
+				}
+				else if(recievedData[0].equals("invalid") && recievedData[1].equals("account"))
+				{
+					flowValues = rtnmsg;
+				}
+				else if(recievedData[0].equals("missing") && recievedData[1].equals("account"))
+				{
+					flowValues = rtnmsg;
+				}
+				else if(recievedData[0].equals("locked") && recievedData[1].equals("account"))
+				{
+					flowValues = rtnmsg;
+				}
+				else if(recievedData[0].equals("exists") && recievedData[1].equals("account"))
+				{
+					flowValues = rtnmsg;
+				}
+				else if(recievedData[0].equals("created") && recievedData[1].equals("account"))
+				{
+					flowValues = rtnmsg;
+				}
+				else if(recievedData[0].equals("failedpasschange") && recievedData[1].equals("account"))
+				{
+					flowValues = rtnmsg;
+				}
+				else if(recievedData[0].equals("oldpasswordfail") && recievedData[1].equals("account"))
+				{
+					flowValues = rtnmsg;
+				}	
+				else if(recievedData[0].equals("users"))
+				{
+					usersConnected = Integer.parseInt(recievedData[1]); 
+				}
+				else
+				{
+					System.out.println("Client Error");
+				}
 			} while (rtnmsg.equals(""));
 						
 		} catch (IOException e) {

@@ -26,7 +26,8 @@ public class SendEmailUsingGMailSMTP {
 	// gmail as a SMTP service
 	final static private String username = "CLUCSC335";
 	final static private String password = "CLUC$C335";
-
+	private String emailRecipient = "";
+	
 	public static void main(String[] args) {
 
 		// -- set up host properties
