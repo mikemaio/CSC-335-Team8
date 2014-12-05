@@ -14,6 +14,7 @@ public class Server {
 	
 	// -- the port number used for client communication
 	private final int PORT = 8000;
+	private int connectedUsers = 0;
 			
 	// -- list of active client threads by ID number
 	private Vector<ConnectionThread> clientconnections;
@@ -21,6 +22,10 @@ public class Server {
 	
 	public Vector<ConnectionThread> getClientconnections() {
 		return clientconnections;
+	}
+	
+	public int getUserConnections() {
+		return connectedUsers;
 	}
 
 	public int getPort()
@@ -48,7 +53,7 @@ public class Server {
 
 		// -- add the thread to the active client threads list
 		clientconnections.add(connection);
-		
+		connectedUsers++;
 		// -- start the thread
 		connection.start();
 
@@ -64,6 +69,7 @@ public class Server {
 	public void removeID(int id)
 	{
 		// -- find the object belonging to the client thread being terminated
+		connectedUsers--;
 		for (int i = 0; i < clientconnections.size(); ++i) {
 			ConnectionThread cc = clientconnections.get(i);
 			long x = cc.getId();
@@ -78,8 +84,10 @@ public class Server {
 				break;
 			}
 		}
-
-
+	}
+	public void removeUser()
+	{
+		connectedUsers--;
 	}
 		
 	public static void main (String args[])

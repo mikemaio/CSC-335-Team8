@@ -30,7 +30,6 @@ public class ConnectPanel extends JPanel implements ActionListener{
 		gr = _gr;
 		connectButton = new JButton("Connect");
 		connectIP = new TextField("127.0.0.1");
-		this.setBackground(Color.LIGHT_GRAY);		
 		//add Parts
 		JPanel window = new JPanel();
 		

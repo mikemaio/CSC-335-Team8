@@ -109,6 +109,10 @@ public class Client {
 				{
 					flowValues = rtnmsg;
 				}
+				else if(recievedData[0].equals("expired") && recievedData[1].equals("account"))
+				{
+					flowValues = rtnmsg;
+				}
 				else if(recievedData[0].equals("missing") && recievedData[1].equals("account"))
 				{
 					flowValues = rtnmsg;
@@ -137,6 +141,23 @@ public class Client {
 				{
 					usersConnected = Integer.parseInt(recievedData[1]); 
 				}
+				else if(recievedData[0].equals("success") && recievedData[1].equals("query"))
+				{
+					System.out.println("worked");
+					flowValues = rtnmsg;
+				}
+				else if(recievedData[0].equals("failureforcity") && recievedData[1].equals("query"))
+				{
+					flowValues = rtnmsg;
+				}
+				else if(recievedData[0].equals("failureforcolumn") && recievedData[1].equals("query"))
+				{
+					flowValues = rtnmsg;
+				}
+				else if(recievedData[0].equals("success") && recievedData[1].equals("email"))
+				{
+					flowValues = rtnmsg;
+				}
 				else
 				{
 					System.out.println("Client Error");
@@ -164,7 +185,7 @@ public class Client {
 			text += "\n";
 			dataout.writeBytes(text);
 			dataout.flush();
-
+			
 			// -- close the peer to peer socket
 			socket.close();
 		} catch (IOException e1) {

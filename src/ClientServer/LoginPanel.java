@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 
 public class LoginPanel extends JPanel {
 
@@ -27,7 +28,8 @@ private JButton registerLP = new JButton("Register");
 private JButton changepassLP = new JButton("Change Password");
 private JButton disconnectLP = new JButton("Disconnect");
 private TextField accountLP = new TextField();
-private static TextField passwordLP = new TextField();
+//private  TextField passwordLP = new TextField();
+private JPasswordField passwordLP = new JPasswordField();
 private  JLabel accountLabelLP = new JLabel("Account : ");
 private  JLabel passwordLabelLP = new JLabel("Password : ");
 
@@ -65,13 +67,23 @@ private  JLabel passwordLabelLP = new JLabel("Password : ");
 					public void actionPerformed(ActionEvent arg0) {
 						//gr.refreshGUI(6);
 						String account = accountLP.getText();
-						String password = passwordLP.getText();
-						String txt = gr.clientOne.sendString("loginprocedure",account,password,null);
+						char[] passwordarray = passwordLP.getPassword();
+						String password = new String(passwordarray);
+						gr.clientOne.sendString("loginprocedure",account,password,null);
 						String delims = "[,]";
 						String recievedData[] = gr.clientOne.getflowValues().split(delims);
+						if(accountLP.getText().equals(""))
+						{
+							JOptionPane.showMessageDialog(loginLP, "Please enter an account name.");
+						}
 						if(recievedData[0].equals("success"))
 						{
+							clearFields();
 							gr.refreshGUI(6);
+						}
+						else if(recievedData[0].equals("expired"))
+						{
+							accountExpired();
 						}
 						else if(recievedData[0].equals("locked"))
 						{
@@ -133,7 +145,6 @@ private  JLabel passwordLabelLP = new JLabel("Password : ");
 	}
 	public void invalidPassword()
 	{
-		accountLP.setText("");
 		passwordLP.setText("");
 		JOptionPane.showMessageDialog(loginLP, "Invalid Password Try Again.");
 	}
@@ -145,7 +156,25 @@ private  JLabel passwordLabelLP = new JLabel("Password : ");
 	{
 		accountLP.setText("");
 		passwordLP.setText("");
+		passwordLP.getText();
 		JOptionPane.showMessageDialog(loginLP, "The account entered is not listed.");
+	}
+	public void accountExpired()
+	{
+		JOptionPane.showMessageDialog(loginLP, "Your account has expired!!!!");
+	}
+	public boolean fieldsFilled()
+	{	
+		return false;
+	}
+	public boolean okToLogon()
+	{
+		return true;
+	}
+	public void clearFields()
+	{
+		accountLP.setText("");
+		passwordLP.setText("");
 	}
 
 

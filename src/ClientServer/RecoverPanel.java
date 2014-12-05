@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 
@@ -15,9 +17,9 @@ public class RecoverPanel extends JPanel
 	private GUIRoot gr;
 	private JButton recoverRP = new JButton("Recover Password");
 	private JButton backRP =  new JButton("Back");
+	private JLabel accountEntry = new JLabel("Ener Account Name : ");
 	private TextField accountRP = new TextField("Enter Account Name...");
-	private TextField emailRP = new TextField("Enter Email...");
-	private TextField emailConfirmRP= new TextField("Confirm Email...");
+
 
 	public RecoverPanel(GUIRoot _gr)
 	{
@@ -36,8 +38,7 @@ public class RecoverPanel extends JPanel
 
 
 		window.add(accountRP);
-		window.add(emailRP);
-		window.add(emailConfirmRP);
+		window.add(accountEntry);
 		window.add(recoverRP);
 		window.add(backRP);
 		this.add(window);
@@ -45,6 +46,20 @@ public class RecoverPanel extends JPanel
 		recoverRP.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
+						if(!accountRP.equals(""))
+						{
+							gr.clientOne.sendString("recover",accountRP.getText(),null,null);
+							String delims = "[,]";
+							String recievedData[] = gr.clientOne.getflowValues().split(delims);
+							if(recievedData[0].equals("success"))
+							{
+								System.out.println("success");
+							}
+						}
+						else
+						{
+							JOptionPane.showMessageDialog(recoverRP, "Please enter an account name.");
+						}
 					}
 				}
 			);

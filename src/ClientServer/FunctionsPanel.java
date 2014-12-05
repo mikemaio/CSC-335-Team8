@@ -21,7 +21,6 @@ public class FunctionsPanel extends JPanel {
 		
 		gr = _gr;
 
-		this.setBackground(Color.red);	
 		//add Parts
 		JPanel window = new JPanel();
     	GridLayout windowLayout = new GridLayout(3,1);

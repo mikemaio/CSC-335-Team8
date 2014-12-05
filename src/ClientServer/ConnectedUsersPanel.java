@@ -18,12 +18,7 @@ public class ConnectedUsersPanel extends JPanel {
 	{
 		super();
 		
-		gr = _gr;
-
-		this.setBackground(Color.red);
-		
-		
-		this.setBackground(Color.red);		
+		gr = _gr;		
 		//add Parts
 		JPanel window = new JPanel();
     	GridLayout windowLayout = new GridLayout(3,1);
@@ -40,7 +35,7 @@ public class ConnectedUsersPanel extends JPanel {
 					public void actionPerformed(ActionEvent arg0) {
 						gr.clientOne.sendString("queryusers", null, null, null);
 						String users = gr.clientOne.getUserQueryValue() + "";
-						userDisplayCuP.setText("Users connected" + users);
+						userDisplayCuP.setText("Users: " + users);
 					}
 				}
 			);

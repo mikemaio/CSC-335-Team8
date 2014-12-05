@@ -31,7 +31,7 @@ public class GUIRoot extends JFrame {
 			//tester
 			//testing mikey to master Test 123
 			
-			setTitle("What Does This Do?");
+			setTitle("RJ's SUPER SECRET PROGRAM?");
 
 			setSize(width, height);
 			

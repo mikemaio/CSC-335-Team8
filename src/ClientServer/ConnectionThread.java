@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import javax.swing.JOptionPane;
+
 
 
 public class ConnectionThread extends Thread {
@@ -87,11 +89,13 @@ public class ConnectionThread extends Thread {
 				//db.main(args);
 				if (txt.equals("DiScOnNeCt")) {
 					datain.close();
-					server.removeID(id);
+					server.removeUser();
 					go = false;
 				}
 				else if (recievedData[0].equals("loginprocedure")) 
 				{
+					
+
 					//dataout.writeBytes(":)" + "/n");
 					db.executeLogin(recievedData[1], recievedData[2]);
 					System.out.println("values :" + db.getflowValues());
@@ -121,11 +125,25 @@ public class ConnectionThread extends Thread {
 				{
 					
 					int users;
-					db.userQuery();
-					users = server.getClientconnections().size();
+					users = server.getUserConnections();
 					dataout.writeBytes("users"+ "," + users + "\n");
 					dataout.flush();
 				}
+				
+				else if (recievedData[0].equals("querysubmit"))
+				{				
+					System.out.println("Triggered");
+					db.pullFromDB(recievedData[1], recievedData[2]);
+					dataout.writeBytes(db.getflowValues() + "\n");
+					dataout.flush();
+				}
+				else if(recievedData[0].equals("recover"))
+				{
+					db.setRandomPassword(recievedData[1]);
+					dataout.writeBytes(db.getflowValues() + "\n");
+					dataout.flush();
+				}
+				
 				else {
 					System.out.println("unrecognized command >>" + txt + "<<");
 					dataout.writeBytes(txt + "\n");

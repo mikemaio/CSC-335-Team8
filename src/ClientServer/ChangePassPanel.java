@@ -50,36 +50,48 @@ public class ChangePassPanel extends JPanel {
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) 
 						{
-						if(checkPassword())
+												
+						if (!accountChP.getText().equals("") && 
+								!oldPassChP.getText().equals("") &&
+								!newPassChP.getText().equals("") &&
+								!confirmNewPassChP.getText().equals("")) 
 						{
-							
-							gr.clientOne.sendString("changepassword",accountChP.getText(),oldPassChP.getText(),newPassChP.getText());
-							String delims = "[,]";
-							String recievedData[] = gr.clientOne.getflowValues().split(delims);
-							if(recievedData[0].equals("success"))
-							{
-								JOptionPane.showMessageDialog(changeChP, "Success");
-								clearFields();
+
+
+							if (validPassword()) {
+
+								if(checkPassword())
+								{
+
+									gr.clientOne.sendString("changepassword",accountChP.getText(),oldPassChP.getText(),newPassChP.getText());
+									String delims = "[,]";
+									String recievedData[] = gr.clientOne.getflowValues().split(delims);
+									if(recievedData[0].equals("success"))
+									{
+										clearFields();
+										gr.refreshGUI(2);
+									}
+									else if(recievedData[0].equals("oldpasswordfail"))
+									{
+										JOptionPane.showMessageDialog(changeChP, "Your old password did not match the one on file try again.");
+										clearFields();
+									}
+									else if(recievedData[0].equals("missing"))
+									{
+										JOptionPane.showMessageDialog(changeChP, "The Account you entered does not exist...Try Again");
+										clearFields();
+									}
+									else
+									{
+										System.out.println("Error with password change field");
+									}
+								}
+								else
+								{
+									JOptionPane.showMessageDialog(changeChP, "New passwords do not match.");
+									clearFields();
+								}
 							}
-							else if(recievedData[0].equals("oldpasswordfail"))
-							{
-								JOptionPane.showMessageDialog(changeChP, "Your old password did not match the one on file try again.");
-								clearFields();
-							}
-							else if(recievedData[0].equals("missing"))
-							{
-								JOptionPane.showMessageDialog(changeChP, "The Account you entered does not exist...Try Again");
-								clearFields();
-							}
-							else
-							{
-								System.out.println("Error with password change field");
-							}
-						}
-						else
-						{
-							JOptionPane.showMessageDialog(changeChP, "Password Format requires One Number and One Special Character....Try Again.");
-							clearFields();
 						}
 					}
 				}
@@ -110,5 +122,40 @@ public class ChangePassPanel extends JPanel {
 		oldPassChP.setText("");
 		newPassChP.setText("");
 		confirmNewPassChP.setText("");	
+	}
+	
+	public boolean validPassword() 
+	{ 
+		boolean correctFormat = true;
+		boolean passNum = false;
+		boolean passLower = false;
+		boolean passUpper = false;
+
+		for(int i = 0; i < newPassChP.getText().length(); i++) {
+			if (Character.isDigit(newPassChP.getText().charAt(i))) 
+			{
+				passNum = true;
+			}
+			if (Character.isLowerCase(newPassChP.getText().charAt(i))) 
+			{
+				passLower = true;
+			}
+			if (Character.isUpperCase(newPassChP.getText().charAt(i))) 
+			{
+				passUpper = true;
+			}
+		}
+		if(newPassChP.getText().length() < 5)
+		{
+			JOptionPane.showMessageDialog(changeChP, "Password must be atleast 5 characters long.");
+			correctFormat = false;
+		}
+		if (!(passNum && passLower && passUpper)) {
+			JOptionPane.showMessageDialog(changeChP, "Password must have at least one lowercase letter, one uppercase letter, and one number in it.");
+			newPassChP.setText("");
+			confirmNewPassChP.setText("");
+			correctFormat = false;
+		}
+		return correctFormat;
 	}
 }
