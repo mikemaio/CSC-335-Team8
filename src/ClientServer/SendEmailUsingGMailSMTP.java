@@ -1,4 +1,4 @@
-package ClientServer;
+//package ClientServer;
 
 // -- Download JavaMail API from here: http://www.oracle.com/technetwork/java/javamail/index.html
 // -- Download JavaBeans Activation Framework from here: http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-java-plat-419418.html#jaf-1.1.1-fcs-oth-JPR

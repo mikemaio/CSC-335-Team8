@@ -1,4 +1,4 @@
-package ClientServer;
+//package ClientServer;
 
 import java.awt.Color;
 import java.awt.GridLayout;
