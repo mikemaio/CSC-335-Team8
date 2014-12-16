@@ -13,27 +13,31 @@ import javax.swing.JPanel;
 
 public class ChangePassPanel extends JPanel {
 	private GUIRoot gr;
+	//button
 	private JButton changeChP = new JButton("Change Password");
 	private JButton backChP = new JButton("Back");
+	//TextFields
 	private TextField accountChP = new TextField("");
 	private TextField oldPassChP = new TextField("");
 	private TextField newPassChP= new TextField("");
 	private TextField confirmNewPassChP = new TextField("");
+	//Labels
 	private JLabel accountEntryChP = new JLabel("Enter Account Name : ");
 	private JLabel oldPassEntryChP = new JLabel("Enter Old Password : ");
 	private JLabel newPassEntryChP = new JLabel("Enter New Password : ");
 	private JLabel confirmPassChP  = new JLabel("Confirm New Password : ");
+	//string for special characters
+	private String specialChar =	"!@#$%^&*()_+[].*";
 
 	public ChangePassPanel(GUIRoot _gr)
 	{
 		super();
 		
 		gr = _gr;
-		//add Parts
 		JPanel window = new JPanel();
     	GridLayout windowLayout = new GridLayout(10,1);
     	window.setLayout(windowLayout);
-
+    	//adds components of panel to frame
     	window.add(accountEntryChP);
 		window.add(accountChP);
 		window.add(oldPassEntryChP);
@@ -50,25 +54,27 @@ public class ChangePassPanel extends JPanel {
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) 
 						{
-												
+						//check if fields are emptp					
 						if (!accountChP.getText().equals("") && 
 								!oldPassChP.getText().equals("") &&
 								!newPassChP.getText().equals("") &&
 								!confirmNewPassChP.getText().equals("")) 
 						{
 
-
+							//chekcs for a valid password format from function below
 							if (validPassword()) {
-
+								//check if password fields match
 								if(checkPassword())
 								{
-
+									
 									gr.clientOne.sendString("changepassword",accountChP.getText(),oldPassChP.getText(),newPassChP.getText());
 									String delims = "[,]";
 									String recievedData[] = gr.clientOne.getflowValues().split(delims);
 									if(recievedData[0].equals("success"))
 									{
 										clearFields();
+										JOptionPane.showMessageDialog(changeChP, "Success!!!");
+
 										gr.refreshGUI(2);
 									}
 									else if(recievedData[0].equals("oldpasswordfail"))
@@ -96,8 +102,7 @@ public class ChangePassPanel extends JPanel {
 					}
 				}
 			);
-		
-		
+				
 		backChP.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
@@ -105,8 +110,7 @@ public class ChangePassPanel extends JPanel {
 					}
 				}
 			);
-		
-
+	
 	}
 	public boolean checkPassword()
 	{
@@ -116,6 +120,7 @@ public class ChangePassPanel extends JPanel {
 		}
 		return false;
 	}
+	//function to clear fields
 	public void clearFields()
 	{
 		accountChP.setText("");
@@ -123,14 +128,14 @@ public class ChangePassPanel extends JPanel {
 		newPassChP.setText("");
 		confirmNewPassChP.setText("");	
 	}
-	
+	//checks for format specification
 	public boolean validPassword() 
 	{ 
 		boolean correctFormat = true;
 		boolean passNum = false;
 		boolean passLower = false;
 		boolean passUpper = false;
-
+		boolean hasSpecChar = false;
 		for(int i = 0; i < newPassChP.getText().length(); i++) {
 			if (Character.isDigit(newPassChP.getText().charAt(i))) 
 			{
@@ -145,12 +150,22 @@ public class ChangePassPanel extends JPanel {
 				passUpper = true;
 			}
 		}
-		if(newPassChP.getText().length() < 5)
+    	for(int i = 0; i < newPassChP.getText().length(); i++)
+    	{
+        	for(int t = 0; t < specialChar.length(); t++)
+        	{
+        		if(newPassChP.getText().charAt(i) == specialChar.charAt(t))
+        		{
+    				hasSpecChar = true;
+        		}
+        	}
+    	}
+		if(newPassChP.getText().length() < 8)
 		{
-			JOptionPane.showMessageDialog(changeChP, "Password must be atleast 5 characters long.");
+			JOptionPane.showMessageDialog(changeChP, "Password must be atleast 8 characters long.");
 			correctFormat = false;
 		}
-		if (!(passNum && passLower && passUpper)) {
+		if (!(passNum && passLower && passUpper && hasSpecChar)) {
 			JOptionPane.showMessageDialog(changeChP, "Password must have at least one lowercase letter, one uppercase letter, and one number in it.");
 			newPassChP.setText("");
 			confirmNewPassChP.setText("");

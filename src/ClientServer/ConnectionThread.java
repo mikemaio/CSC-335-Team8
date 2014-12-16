@@ -31,9 +31,6 @@ public class ConnectionThread extends Thread {
 	//    it will be set at time of construction
 	private Server server;
 	
-
-
-
 	public ConnectionThread (int id, Socket socket, Server server) 
 	{
 		this.server = server;
@@ -46,7 +43,7 @@ public class ConnectionThread extends Thread {
 			datain = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			dataout = new DataOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
-			e.printStackTrace();
+    		e.printStackTrace();
 			System.exit(1);
 		}
 		
@@ -66,7 +63,6 @@ public class ConnectionThread extends Thread {
 		go = false;
 	}
 	
-
 	public void run () {
 		// -- server thread runs until the client terminates the connection
 		//put if from send string
@@ -94,17 +90,10 @@ public class ConnectionThread extends Thread {
 				}
 				else if (recievedData[0].equals("loginprocedure")) 
 				{
-					
-
-					//dataout.writeBytes(":)" + "/n");
 					db.executeLogin(recievedData[1], recievedData[2]);
 					System.out.println("values :" + db.getflowValues());
 					dataout.writeBytes(db.getflowValues() + "\n");
 					dataout.flush();
-					//dataout.flush();
-					
-					
-				
 				}
 				else if (recievedData[0].equals("registerprocedure"))
 				{
@@ -112,8 +101,6 @@ public class ConnectionThread extends Thread {
 					System.out.println("values for register:" + db.getflowValues());
 					dataout.writeBytes(db.getflowValues() + "\n");
 					dataout.flush();
-					
-					
 				}
 				else if (recievedData[0].equals("changepassword"))
 				{
@@ -123,7 +110,6 @@ public class ConnectionThread extends Thread {
 				}
 				else if (recievedData[0].equals("queryusers"))
 				{
-					
 					int users;
 					users = server.getUserConnections();
 					dataout.writeBytes("users"+ "," + users + "\n");
@@ -148,7 +134,9 @@ public class ConnectionThread extends Thread {
 					System.out.println("unrecognized command >>" + txt + "<<");
 					dataout.writeBytes(txt + "\n");
 				}
-			} catch (IOException e) {
+			} 
+			catch (IOException e) 
+			{
 				e.printStackTrace();
 				go = false;
 			}

@@ -15,7 +15,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-//import Test.GraphicsFrame;
 
 public class ConnectPanel extends JPanel implements ActionListener{
 	private GUIRoot gr;

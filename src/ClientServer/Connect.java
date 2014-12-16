@@ -1,7 +1,5 @@
 package ClientServer;
 
-
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,17 +15,16 @@ public class Connect {
 
 	public Connect(Server owner) {
 		super();
-
 		this.owner = owner;
-		
 		try {
 			// -- open the server socket
 			serversocket = new ServerSocket(this.owner.getPort());
 			
 			// -- listen for a connection request on the server socket
-			listen();
-			
-		} catch (IOException e) {
+			listen();	
+		} 
+		catch (IOException e)
+		{
 			e.printStackTrace();
 			System.exit(1);
 		}		
@@ -46,8 +43,6 @@ public class Connect {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
 		}
 	}
-
 }

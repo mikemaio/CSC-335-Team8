@@ -131,9 +131,7 @@ private  JLabel passwordLabelLP = new JLabel("Password : ");
 						gr.refreshGUI(1);
 					}
 				}
-			);
-		
-		
+			);	
 	}
 	public String getAccount()
 	{
@@ -176,6 +174,4 @@ private  JLabel passwordLabelLP = new JLabel("Password : ");
 		accountLP.setText("");
 		passwordLP.setText("");
 	}
-
-
 }

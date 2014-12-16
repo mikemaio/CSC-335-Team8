@@ -11,25 +11,24 @@ import javax.swing.JPanel;
 
 public class ConnectedUsersPanel extends JPanel {
 	private GUIRoot gr;
+	//buttons
 	private JButton usersCheckCuP = new JButton("CheckUsers");
 	private JButton backCuP = new JButton("Back");
+	//text fields
 	private TextField userDisplayCuP = new TextField();
 	public ConnectedUsersPanel(GUIRoot _gr)
 	{
 		super();
-		
 		gr = _gr;		
 		//add Parts
 		JPanel window = new JPanel();
     	GridLayout windowLayout = new GridLayout(3,1);
     	window.setLayout(windowLayout);
-
-
     	window.add(usersCheckCuP);
     	window.add(userDisplayCuP);
     	window.add(backCuP);
 		this.add(window);
-		
+		//page flow
 		usersCheckCuP.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
@@ -47,7 +46,5 @@ public class ConnectedUsersPanel extends JPanel {
 					}
 				}
 			);
-
 	}
-
 }

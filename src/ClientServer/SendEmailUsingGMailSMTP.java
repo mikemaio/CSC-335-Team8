@@ -3,6 +3,7 @@ package ClientServer;
 // -- Download JavaMail API from here: http://www.oracle.com/technetwork/java/javamail/index.html
 // -- Download JavaBeans Activation Framework from here: http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-java-plat-419418.html#jaf-1.1.1-fcs-oth-JPR
 import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -48,7 +49,7 @@ public class SendEmailUsingGMailSMTP {
 
 		// -- Set up the recipient's email address
 		String to = email;
-				
+		
 		try {
 			// -- Create a default MimeMessage object.
 			Message message = new MimeMessage(session);

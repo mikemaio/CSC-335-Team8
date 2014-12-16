@@ -30,14 +30,12 @@ public class RegisterPanel extends JPanel{
 	private JLabel emailReEntryRegP = new JLabel("Re-Enter Desired Email : ");
 	private JLabel passwordEntryRegP = new JLabel("Enter Desired Password : ");
 	private JLabel passwordReEntryRegP = new JLabel("Re-Enter Desired Password : ");
+	//password check variables
+	private int USERMIN = 8;
+	private String emailregex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	private Pattern pattern = Pattern.compile(emailregex);
+	private String specialChar =	"!@#$%^&*()_+[].*";
 	
-	private int USERMIN = 5;
-	private static String emailregex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-	private static Pattern pattern = Pattern.compile(emailregex);
-
-	
-
-
 	public RegisterPanel(GUIRoot _gr)
 	{
 		super();
@@ -75,7 +73,8 @@ public class RegisterPanel extends JPanel{
 								!emailRegP.getText().equals("") &&
 								!emailConfirmRegP.getText().equals("") &&
 								!passwordRegP.getText().equals("") &&
-								!confirmPassRegP.getText().equals("")) {
+								!confirmPassRegP.getText().equals("")) 
+						{
 							
 						if (correctFields()) 
 						{
@@ -120,28 +119,28 @@ public class RegisterPanel extends JPanel{
 		emailConfirmRegP.setText("");
 		confirmPassRegP.setText("");
 		
-	}
-	
-    public static boolean validEmailAddress (String emailaddress)
+	}	
+    public boolean validEmailAddress (String emailaddress)
     {
         Matcher matcher = pattern.matcher(emailaddress);
         return matcher.find();
     }
-    
     public boolean correctFields() {
     	boolean correctFormat = true;
     	boolean passNum = false;
 		boolean passLower = false;
 		boolean passUpper = false;
+		boolean hasSpecChar = false;
 		   	
     	if (accountRegP.getText().length() < USERMIN) 
 		{
-			JOptionPane.showMessageDialog(createRegP, "Username must be at least 5 characters long.");
+			JOptionPane.showMessageDialog(createRegP, "Username must be at least 8 characters long.");
 			accountRegP.setText("");
 			correctFormat = false;
 		}
     	
-    	for(int i = 0; i < passwordRegP.getText().length(); i++) {
+    	for(int i = 0; i < passwordRegP.getText().length(); i++) 
+    	{
 			if (Character.isDigit(passwordRegP.getText().charAt(i))) 
 			{
 				passNum = true;
@@ -155,9 +154,20 @@ public class RegisterPanel extends JPanel{
 				passUpper = true;
 			}
 		}
+    	for(int i = 0; i < passwordRegP.getText().length(); i++)
+    	{
+        	for(int t = 0; t < specialChar.length(); t++)
+        	{
+        		if(passwordRegP.getText().charAt(i) == specialChar.charAt(t))
+        		{
+    				hasSpecChar = true;
+        		}
+        	}
+    	}
 		
-		if (!(passNum && passLower && passUpper)) {
-			JOptionPane.showMessageDialog(createRegP, "Password must have at least one lowercase letter, one uppercase letter, and one number in it.");
+		if (!(passNum && passLower && passUpper && hasSpecChar)) 
+		{
+			JOptionPane.showMessageDialog(createRegP, "Password must have at least one lowercase letter, one uppercase letter, special character, and one number in it.");
 			passwordRegP.setText("");
 			confirmPassRegP.setText("");
 			correctFormat = false;
@@ -195,5 +205,4 @@ public class RegisterPanel extends JPanel{
 		
     	return correctFormat;
     }
-	
 }

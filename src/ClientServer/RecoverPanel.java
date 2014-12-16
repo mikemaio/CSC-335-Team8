@@ -11,32 +11,24 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-
 public class RecoverPanel extends JPanel
 {
 	private GUIRoot gr;
 	private JButton recoverRP = new JButton("Recover Password");
 	private JButton backRP =  new JButton("Back");
 	private JLabel accountEntry = new JLabel("Ener Account Name : ");
-	private TextField accountRP = new TextField("Enter Account Name...");
-
+	private TextField accountRP = new TextField("");
 
 	public RecoverPanel(GUIRoot _gr)
 	{
 		super();
 		
 		gr = _gr;
-
-		this.setBackground(Color.red);
-
 		
-		this.setBackground(Color.red);		
 		//add Parts
 		JPanel window = new JPanel();
     	GridLayout windowLayout = new GridLayout(5,1);
     	window.setLayout(windowLayout);
-
-
 		window.add(accountRP);
 		window.add(accountEntry);
 		window.add(recoverRP);
@@ -70,7 +62,5 @@ public class RecoverPanel extends JPanel
 					}
 				}
 			);
-
 	}
-
 }

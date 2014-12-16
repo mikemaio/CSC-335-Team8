@@ -78,7 +78,7 @@ public class DBaseConnection {
 			// -- These will be used to send queries to the database
             stmt = conn.createStatement();
             rset = stmt.executeQuery("SELECT VERSION()");
-            rset = stmt.executeQuery("SELECT * FROM user");
+            rset = stmt.executeQuery("SELECT * FROM user;");
 
             System.out.println(url);
             if (rset.next()) 
@@ -166,6 +166,7 @@ public class DBaseConnection {
 			}
 		
 	}
+	//increments failed logins
 	public void incrementLoginAttempts()
 	{
 		attempts++;
@@ -184,6 +185,7 @@ public class DBaseConnection {
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
 	}
+	//retrieves current accounts login attemptes
 	public void getLoginAttempts()
 	{
 		url = "jdbc:mysql://localhost:3306/userdatabase";
@@ -208,6 +210,7 @@ public class DBaseConnection {
 		}
 	
 	}
+	//checks for current account in db
 	public void checkForExistingAcc()
 	{
 		url = "jdbc:mysql://localhost:3306/userdatabase";
@@ -236,6 +239,7 @@ public class DBaseConnection {
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
 	}
+	//handles account creation
 	public void createAccount(String account, String password, String email)
 	{
 		_account = account;
@@ -272,6 +276,7 @@ public class DBaseConnection {
 		emailservice.sendNotificationEmail(_account, getAccountEmail(), notification);
   
 	}
+	//pull from world db
 	public void pullFromDB(String databaseCity, String cityInfo)
 	{
 		url = "jdbc:mysql://localhost:3306/world";
@@ -300,6 +305,7 @@ public class DBaseConnection {
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
 	}
+	//checks world db for valid city entry
 	public boolean checkValidCity(String query)
 	{
 		url = "jdbc:mysql://localhost:3306/world";
@@ -329,6 +335,7 @@ public class DBaseConnection {
 		}
 		return false;
 	}
+	//future function for more info grabbing
 	public boolean checkValidColumn(String query)
 	{
 		url = "jdbc:mysql://localhost:3306/world";
@@ -357,6 +364,7 @@ public class DBaseConnection {
 		}
 		return false;
 	}
+	//resets on every success login
 	public void resetLoginAttempts()
 	{
 		url = "jdbc:mysql://localhost:3306/userdatabase";
@@ -374,10 +382,7 @@ public class DBaseConnection {
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
 	}
-	public void setSelection(int select)
-	{
-		dataBaseSelect = select;
-	}
+	//password change
 	public void changePassword(String accName, String oldPass, String newPass)
 	{
 		_account = accName;
@@ -521,13 +526,6 @@ public static void main(String[] args) {
 	}
 	public void modifyPassDate()
 	{
-		/*
-		String days  = Calendar.DAY_OF_MONTH + "";
-		String months = Calendar.MONTH + "";
-		String year = Calendar.YEAR + "";
-		String date = new String(months + "/" + days + "/" + year);
-		*/
-		//accountDate = getCurrentDate();
 		_currentDate = getCurrentDate();
 		
 		url = "jdbc:mysql://localhost:3306/userdatabase";
@@ -572,7 +570,6 @@ public static void main(String[] args) {
 		}
 		else
 		{
-			//case
 			setflowValues("missing"+ "," + "account");
 			System.out.println("Account entered does not Exist");
 		}
